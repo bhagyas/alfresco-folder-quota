@@ -37,6 +37,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
@@ -166,7 +167,7 @@ public class FolderUsageCalculator {
 		Long change = 0L;
 		
 		//if this node is in the archive store, return 0 immediately
-		if(changed.toString().indexOf("archive") != -1) return 0L;
+		if(changed.getStoreRef().getProtocol().equalsIgnoreCase(StoreRef.PROTOCOL_ARCHIVE)) return 0L;
 		
 		//if this is a folder delete, go through and tally up the size of the
 		//children.  By the time the children are being deleted, the parent is gone
