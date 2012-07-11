@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.alfresco</groupId>
+  <artifactId>folder-quota</artifactId>
+  <packaging>amp</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.alfresco.maven.plugin</groupId>
+        <artifactId>mmt-maven-plugin</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>add-resources</id>
+            <goals><goal>add-resources</goal></goals>
+            <phase>validate</phase>
+            <configuration>
+              <configExcludes>**/model/**</configExcludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-data-model</artifactId>
+      <version>4.0.d</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-repository</artifactId>
+      <version>4.0.d</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.alfresco</groupId>
+      <artifactId>alfresco-core</artifactId>
+      <version>4.0.d</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.16</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.opensymphony.quartz</groupId>
+      <artifactId>com.springsource.org.quartz</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+    <dependency>
+       <groupId>javax.transaction</groupId>
+       <artifactId>jta</artifactId>
+       <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>alfresco-public</id>
+      <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>alfresco-public-snapshots</id>
+      <url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
+      <snapshots><enabled>true</enabled></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <version>0.1</version>
+</project>

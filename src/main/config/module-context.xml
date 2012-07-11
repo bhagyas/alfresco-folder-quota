@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	<!-- create the quota update queue -->
+	<bean id="folderQuotaUpdateQueue" class="org.alfresco.extension.folderquota.behaviour.FolderQuotaUpdateQueueInMemoryImpl">
+    	<property name="nodeService" ref="NodeService"/>
+	</bean>
+
+	<!-- bootstrap our content model -->
+	<bean id="folderUsageModel" parent="dictionaryModelBootstrap"
+		depends-on="dictionaryBootstrap">
+		<property name="models">
+			<list>
+				<value>alfresco/module/${project.artifactId}/folderQuotaModel.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- bean encapsulating the folder usage calculator -->
+	<bean id="folderUsageCalculator" class="org.alfresco.extension.folderquota.FolderUsageCalculator">
+		<property name="serviceRegistry" ref="ServiceRegistry"/>
+		<!-- <property name="folderQuotaUpdateQueue" ref="folderQuotaUpdateQueue"/> -->
+	</bean>
+
+	<!-- set up the job detail for the folder usage calculator -->
+	<!--<bean id="folderUsageRecalculateJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass">
+			<value>org.alfresco.extension.folderquota.FolderUsageCalculatorJob</value>
+		</property>
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="folderUsageCalculator">
+					<ref bean="folderUsageCalculator" />
+				</entry>
+				<entry key="mode" value="recalculate"/>
+			</map>
+		</property>
+	</bean>-->
+
+	<!-- set up the job detail for the folder usage calculator -->
+	<bean id="folderUsageIncrementalJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass">
+			<value>org.alfresco.extension.folderquota.FolderUsageCalculatorJob</value>
+		</property>
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="folderUsageCalculator">
+					<ref bean="folderUsageCalculator" />
+				</entry>
+				<entry key="mode" value="incremental"/>
+			</map>
+		</property>
+	</bean>
+
+	<!-- trigger bean to fire off the quota calculator job (full recalculation)-->
+	<!-- uncomment to calculate folder usages on a schedule instead of when the aspect is applied -->
+	<!--<bean id="folderUsageRecalculateTrigger" class="org.alfresco.util.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="folderUsageRecalculateJobDetail" />
+		</property>
+		<property name="scheduler">
+			<ref bean="schedulerFactory" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 0 * * ?</value>
+		</property>
+	</bean>-->
+
+	<!-- trigger bean to fire off the quota calculator job (incremental update) -->
+	<!-- uncomment and set folderQuotaBehaviour useJobQueue = true to enable -->
+	<!--<bean id="folderUsageIncrementalTrigger" class="org.alfresco.util.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="folderUsageIncrementalJobDetail" />
+		</property>
+		<property name="scheduler">
+			<ref bean="schedulerFactory" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>-->
+
+	<bean id="quotaThreadPoolExecutor" class="org.alfresco.util.ThreadPoolExecutorFactoryBean">
+        <property name="poolName">
+            <value>quotaThreadPool</value>
+        </property>
+        <property name="corePoolSize">
+            <value>10</value>
+        </property>
+        <property name="maximumPoolSize">
+            <value>20</value>
+        </property>
+        <property name="threadPriority">
+            <value>5</value>
+        </property>
+    </bean>
+    
+	<bean id="folderQuotaBehaviour" class="org.alfresco.extension.folderquota.behaviour.FolderQuotaBehaviour" init-method="init">
+		<property name="serviceRegistry" ref="ServiceRegistry" />
+    	<property name="policyComponent" ref="policyComponent"/>
+		<property name="folderQuotaUpdateQueue" ref="folderQuotaUpdateQueue"/>
+		<property name="folderUsageCalculator" ref="folderUsageCalculator"/>
+		<property name="updateUsageOnAddAspect" value="true"/>
+		<property name="useJobQueue" value="false"/>
+		<property name="threadPoolExecutor" ref="quotaThreadPoolExecutor"/>
+	</bean>
+	
+</beans>
