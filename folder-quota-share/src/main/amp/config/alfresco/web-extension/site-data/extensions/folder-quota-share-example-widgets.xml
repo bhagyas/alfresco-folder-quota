@@ -1,0 +1,43 @@
+<extension>
+  <modules>
+    <module>
+      <id>Folder Quota Display - Display Folder Current Quota Level</id>
+      <version>1.0</version>
+      <auto-deploy>true</auto-deploy>
+      <configurations>
+        <config evaluator="string-compare" condition="DocumentLibrary">
+          <aspects>
+            <visible>
+              <aspect name="fq:quota"/>
+            </visible>
+            <addable></addable>
+            <removeable></removeable>
+          </aspects>
+        </config>
+        <config evaluator="node-type" condition="cm:folder">
+          <forms>
+            <form>
+              <field-visibility>
+                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeCurrent" for-mode="view"/>
+              </field-visibility>
+            </form>
+            <form id="doclib-simple-metadata">
+              <field-visibility>
+                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeCurrent" for-mode="view"/>
+              </field-visibility>
+              <edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl"/>
+            </form>
+            <form id="doclib-inline-edit">
+              <field-visibility>
+                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeCurrent" for-mode="view"/>
+              </field-visibility>
+            </form>
+          </forms>
+        </config>
+      </configurations>
+    </module>
+  </modules>
+</extension>
