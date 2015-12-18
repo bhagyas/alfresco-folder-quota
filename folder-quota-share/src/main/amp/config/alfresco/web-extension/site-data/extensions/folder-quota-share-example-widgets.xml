@@ -18,20 +18,20 @@
           <forms>
             <form>
               <field-visibility>
-                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeQuota"/>
                 <show id="fq:sizeCurrent" for-mode="view"/>
               </field-visibility>
             </form>
             <form id="doclib-simple-metadata">
               <field-visibility>
-                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeQuota"/>
                 <show id="fq:sizeCurrent" for-mode="view"/>
               </field-visibility>
               <edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl"/>
             </form>
             <form id="doclib-inline-edit">
               <field-visibility>
-                <show id="fq:sizeQuota" label="Quota Size"/>
+                <show id="fq:sizeQuota"/>
                 <show id="fq:sizeCurrent" for-mode="view"/>
               </field-visibility>
             </form>

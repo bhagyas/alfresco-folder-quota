@@ -15,6 +15,12 @@
                 <value>alfresco/module/${project.artifactId}/model/content-model.xml</value>
             </list>
         </property>
+
+        <property name="labels">
+            <list>
+                <value>alfresco/module/${project.artifactId}/messages/messages</value>
+            </list>
+        </property>
     </bean>
     <!--Original model left as a historical artifact.-->
     <!--&lt;!&ndash; bootstrap our content model &ndash;&gt;-->
