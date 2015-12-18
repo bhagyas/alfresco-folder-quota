@@ -11,4 +11,11 @@
     <module>folder-quota-repo</module>
     <module>folder-quota-share</module>
   </modules>
+
+  <parent>
+    <groupId>org.alfresco.maven</groupId>
+    <artifactId>alfresco-sdk-parent</artifactId>
+    <version>2.1.1</version>
+  </parent>
+
 </project>
