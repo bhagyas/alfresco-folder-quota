@@ -7,6 +7,11 @@
   <version>1.0-SNAPSHOT</version>
   <name>Folder Quota</name>
   <description>Folder Quota Enforcement Module for Alfresco</description>
+  <parent>
+    <groupId>org.alfresco.maven</groupId>
+    <artifactId>alfresco-sdk-parent</artifactId>
+    <version>2.1.1</version>
+  </parent>
   <modules>
     <module>folder-quota-repo</module>
     <module>folder-quota-share</module>
