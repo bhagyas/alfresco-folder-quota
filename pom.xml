@@ -12,6 +12,10 @@
     <artifactId>alfresco-sdk-parent</artifactId>
     <version>2.1.1</version>
   </parent>
+  <properties>
+    <alfresco.version>LX96</alfresco.version>
+    <dependency.surf.version>6.11</dependency.surf.version>
+  </properties>
   <modules>
     <module>folder-quota-repo</module>
     <module>folder-quota-share</module>
