@@ -21,4 +21,11 @@
     <module>folder-quota-share</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>loftux-public</id>
+      <url>http://artifacts.loftux.net/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+
 </project>

@@ -124,51 +124,57 @@ public class FolderQuotaBehaviour implements ContentServicePolicies.OnContentPro
      * comes through, the parent node quota check fails.
      * 
      */
-    public void onContentPropertyUpdate(NodeRef nodeRef, QName propertyQName, ContentData beforeValue, ContentData afterValue) {
+    public void onContentPropertyUpdate(final NodeRef nodeRef, QName propertyQName, final ContentData beforeValue, final ContentData afterValue) {
+		//if the change size will push the folder over quota, roll back the current transaction
+		final UserTransaction tx = serviceRegistry.getTransactionService().getUserTransaction();
 
-        logger.debug("[FolderQuota] - onContentPropertyUpdate");
-    	long change = 0;
-    	
-    	//beforeValue can be null on new item creation
-    	if(beforeValue == null) change = afterValue.getSize();
-    	else change = afterValue.getSize() - beforeValue.getSize();
-    	
-        NodeRef quotaParent = usage.getParentFolderWithQuota(nodeRef);
-        
-        if(change > 0) {
-	        if(quotaParent != null)
-	        {
-	        	NodeService nodeService = serviceRegistry.getNodeService();
-	        	Long quotaSize = (Long) nodeService.getProperty(quotaParent, FolderQuotaConstants.PROP_FQ_SIZE_QUOTA);
-	        	Long currentSize = (Long) nodeService.getProperty(quotaParent, FolderQuotaConstants.PROP_FQ_SIZE_CURRENT);
-	        	//quotaSize can be null if the aspect has been added but the quota has not yet been set
-	        	if(quotaSize != null) {
-		        	if(currentSize + change > quotaSize)
-		        	{
-			        	//if the change size will push the folder over quota, roll back the current transaction
-			        	UserTransaction tx = serviceRegistry.getTransactionService().getUserTransaction();
-			        	try
-			        	{
-			        		tx.rollback();
-			        	}
-			        	catch(SystemException ex) 
-			        	{
-			        		logger.warn(String.format("[FolderQuota] - An upload to folder %s failed due to quota", quotaParent));
-			        	}
-		        	}
-		        	else
-		        	{
-		        		//queue.enqueueEvent(quotaParent, change);
-		        		updateSize(quotaParent, change);
-		        		logger.debug(String.format("[FolderQuota] - Added nodeRef %s to the queue; size change %s", nodeRef, change));
-		        	}
-	        	}
-	        	else
-	        	{
-	        		logger.warn(String.format("[FolderQuota] - Folder %s has the quota aspect added but no quota set", quotaParent));
-	        	}
-	        }
-        }
+		AuthenticationUtil.runAsSystem(new RunAsWork<Object>() {
+			@Override
+			public Object doWork() throws Exception {
+				logger.debug("[FolderQuota] - onContentPropertyUpdate");
+				long change = 0;
+
+				//beforeValue can be null on new item creation
+				if(beforeValue == null) change = afterValue.getSize();
+				else change = afterValue.getSize() - beforeValue.getSize();
+
+				NodeRef quotaParent = usage.getParentFolderWithQuota(nodeRef);
+
+				if(change > 0) {
+					if(quotaParent != null)
+					{
+						NodeService nodeService = serviceRegistry.getNodeService();
+						Long quotaSize = (Long) nodeService.getProperty(quotaParent, FolderQuotaConstants.PROP_FQ_SIZE_QUOTA);
+						Long currentSize = (Long) nodeService.getProperty(quotaParent, FolderQuotaConstants.PROP_FQ_SIZE_CURRENT);
+						//quotaSize can be null if the aspect has been added but the quota has not yet been set
+						if(quotaSize != null) {
+							if(currentSize + change > quotaSize)
+							{
+								try
+								{
+									tx.rollback();
+								}
+								catch(SystemException ex)
+								{
+									logger.warn(String.format("[FolderQuota] - An upload to folder %s failed due to quota", quotaParent));
+								}
+							}
+							else
+							{
+								//queue.enqueueEvent(quotaParent, change);
+								updateSize(quotaParent, change);
+								logger.debug(String.format("[FolderQuota] - Added nodeRef %s to the queue; size change %s", nodeRef, change));
+							}
+						}
+						else
+						{
+							logger.warn(String.format("[FolderQuota] - Folder %s has the quota aspect added but no quota set", quotaParent));
+						}
+					}
+				}
+				return null;
+			}
+		});
     }
 
     /**
