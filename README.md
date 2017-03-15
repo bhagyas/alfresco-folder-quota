@@ -1,12 +1,12 @@
-#Alfresco Folder Quota Add-on
+# Alfresco Folder Quota Add-on
 
 Implement a folder-wise folder quota within Alfresco.
 
-##Updates
+## Updates
 - 2017-March-02 : Fixed a permission issue when the non-admin users attempted to download content as ZIP for a quota applied folder.
 
 
-##Usage
+## Usage
 
 1) `tomcat/shared/classes/alfresco/extension/custom-log4j.properties`
 
@@ -52,7 +52,7 @@ log4j.logger.org.alfresco.extension.folderquota=DEBUG
 	</config>
 ```
 
-##Authors
+## Authors
 This is a maintained fork from the originally hosted source code on Google Code. 
 
 Currently maintained by [Bhagya Silva](https://about.me/bhagyas) and [Loftux AB](https://loftux.com)
